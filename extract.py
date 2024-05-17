@@ -29,9 +29,12 @@ def extract_temperature(file_path):
         all_lines = file.readlines()
         # Extract temperature value using regular expression]
         #print(all_lines[1])
-        match = re.search(r'Temp\. \[.\]=([0-9.e+-]+)', all_lines[1])
+        # match = re.search(r"Temp\. \[.\]=([0-9.e+-]+)[\s]+[AC]", all_lines[1])
+        match0 = all_lines[1]
+        match = match0.split(' ')[5].split('=')[1]
         if match:
-            temperature = match.group(1)
+            # temperature = match.group(1)
+            temperature = match
             return temperature
     return None
 
@@ -91,6 +94,7 @@ def main():
             # Extract temperature and isothermal values
             temperature = extract_temperature(file_path)
             isothermal = extract_isothermal(file_name)
+            # print(temperature, isothermal)
             if ind<1:
                 with open(file_path, 'r') as file:
                     all_lines = file.readlines()
@@ -122,6 +126,8 @@ def main():
     # Check if both headers are not empty before writing to output file
     if header1 and header2 and h1:
         for i in range(len(h1)):
+            h1[i] = h1[i].replace("''","-2")
+            h1[i] = h1[i].replace("'","-1")
             output_file = '0' + str(i) + '[' + slugify(h1[i]) + ']-output' + '.dat'
             #print(output_file)
             # Write header rows to output file

@@ -24,9 +24,11 @@ def slugify(value, allow_unicode=False):
     return re.sub(r"[-\s]+", "-", value).strip("-_")
 
 def extract_temperature(file_path):
-    with open(file_path, 'r') as file:
+    with open(file_path, 'rb') as file0:
         # Read the second line
-        all_lines = file.readlines()
+        file_con = file0.read()
+        file = file_con.decode('iso-8859-1')
+        all_lines = file.splitlines()
         # Extract temperature value using regular expression]
         #print(all_lines[1])
         # match = re.search(r"Temp\. \[.\]=([0-9.e+-]+)[\s]+[AC]", all_lines[1])
@@ -96,13 +98,15 @@ def main():
             isothermal = extract_isothermal(file_name)
             # print(temperature, isothermal)
             if ind<1:
-                with open(file_path, 'r') as file:
-                    all_lines = file.readlines()
+                with open(file_path, 'rb') as file0:
+                    file_con = file0.read()
+                    file = file_con.decode('iso-8859-1')
+                    all_lines = file.splitlines()
                     fheaders = all_lines[2]
                     h2 = " ".join(fheaders.split())
                     h1 = h2.split()
                     
-                    data0 = np.loadtxt(file_path, skiprows=3)
+                    data0 = np.loadtxt(file_path, skiprows=3, encoding='latin1')
                     freq = data0[:,0]
                     freq = freq.reshape(-1,1)
             #print(file_path)
@@ -141,7 +145,7 @@ def main():
                 for file_name in natsorted(os.listdir(directory)):
                     if file_name.endswith('.txt'):
                         file_path = os.path.join(directory, file_name)
-                        data0 = np.loadtxt(file_path, skiprows=3)
+                        data0 = np.loadtxt(file_path, skiprows=3, encoding='latin1')
                         data1 = data0[:,i]
                         data1 = data1.reshape(-1,1)
                         if j<1:
